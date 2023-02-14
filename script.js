@@ -12,49 +12,100 @@ function getComputerChoice() {
 
 //play a round of the game
 function playRound(playerSelection, computerSelection) {
-  /* convert player's string to uppercase first letter
-  to match with computer's string no matter what */
-  playerSelection = playerSelection.toLowerCase();
-  playerSelection = playerSelection[0].toUpperCase() + playerSelection.slice(1);
-
-  //message in case the player wins
-  let winMessage = () =>
-    `You win! ${playerSelection} wins ${computerSelection}`;
-
-  //message in case the player loses
-  let loseMessage = () =>
-    `You lose! ${computerSelection} wins ${playerSelection}`;
-
-  //message in case it's tie
-  let tieMessage = () => `It's tie!`;
-
+  //game outcome checker: -1 for lose, 1 for win, 0 for tie
   if (playerSelection == "Rock") {
     if (computerSelection == "Paper") {
-      return loseMessage();
+      return -1;
     } else if (computerSelection == "Scissors") {
-      return winMessage();
+      return 1;
     } else {
-      return tieMessage();
+      return 0;
     }
   } else if (playerSelection == "Paper") {
     if (computerSelection == "Scissors") {
-      return loseMessage();
+      return -1;
     } else if (computerSelection == "Rock") {
-      return winMessage();
+      return 1;
     } else {
-      return tieMessage();
+      return 0;
     }
   } else if (playerSelection == "Scissors") {
     if (computerSelection == "Rock") {
-      return loseMessage();
+      return -1;
     } else if (computerSelection == "Paper") {
-      return winMessage();
+      return 1;
     } else {
-      return tieMessage();
+      return 0;
     }
   }
 }
 
-const playerSelection = "rock";
-const computerSelection = getComputerChoice();
-console.log(playRound(playerSelection, computerSelection));
+//play a game of rounds
+function game() {
+  let computerWinCounter = 0,
+    playerWinCounter = 0;
+  for (let i = 0; i < 5; i++) {
+    let playerInput = prompt(
+      `Please, input a "Rock", "Paper" or "Scissors" to play the game no.${
+        i + 1
+      }`
+    );
+    if (
+      playerInput === undefined ||
+      playerInput === null ||
+      playerInput == ""
+    ) {
+      computerWinCounter = 99;
+      break;
+    }
+    /* convert player's string to uppercase first letter
+    to match with computer's string no matter what */
+    playerInput = playerInput.toLowerCase();
+    playerInput = playerInput[0].toUpperCase() + playerInput.slice(1);
+    if (
+      playerInput !== "Rock" &&
+      playerInput !== "Paper" &&
+      playerInput !== "Scissors"
+    ) {
+      computerWinCounter = 99;
+      break;
+    }
+
+    let stringComputerChoice = getComputerChoice();
+
+    console.log(
+      `You chose ${playerInput} but... 
+      PC went straight with the ${stringComputerChoice}! So...`
+    );
+
+    let outcomePlay = playRound(playerInput, stringComputerChoice);
+
+    //message in case the player wins
+    let winMessage = () =>
+      `You win! ${playerInput} wins ${stringComputerChoice}`;
+    //message in case the player loses
+    let loseMessage = () =>
+      `You lose! ${stringComputerChoice} wins ${playerInput}`;
+    //message in case it's tie
+    let tieMessage = () =>
+      `It's a tie between ${stringComputerChoice} and ${playerInput}`;
+
+    if (outcomePlay == 1) {
+      console.log(winMessage());
+      playerWinCounter++;
+    } else if (outcomePlay == -1) {
+      console.log(loseMessage());
+      computerWinCounter++;
+    } else console.log(tieMessage());
+  }
+  return playerWinCounter > computerWinCounter
+    ? `You win the game! ${playerWinCounter} : ${computerWinCounter}`
+    : playerWinCounter < computerWinCounter && computerWinCounter != 99
+    ? `You lose the game! ${playerWinCounter} : ${computerWinCounter}`
+    : playerWinCounter == computerWinCounter && computerWinCounter != 99
+    ? `A solid tie! ${playerWinCounter} : ${computerWinCounter}`
+    : `You broke the game`;
+}
+
+//main func
+console.log(game());
