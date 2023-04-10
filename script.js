@@ -13,6 +13,7 @@ function getComputerChoice() {
 //play a round of the game
 function playRound(playerSelection, computerSelection) {
   //game outcome checker: -1 for lose, 1 for win, 0 for tie
+
   if (playerSelection == "Rock") {
     if (computerSelection == "Paper") {
       return -1;
@@ -44,68 +45,45 @@ function playRound(playerSelection, computerSelection) {
 function game() {
   let computerWinCounter = 0,
     playerWinCounter = 0;
-  for (let i = 0; i < 5; i++) {
-    let playerInput = prompt(
-      `Please, input a "Rock", "Paper" or "Scissors" to play the game no.${
-        i + 1
-      }`
-    );
-    if (
-      playerInput === undefined ||
-      playerInput === null ||
-      playerInput == ""
-    ) {
-      computerWinCounter = 99;
-      break;
-    }
-    /* convert player's string to uppercase first letter
-    to match with computer's string no matter what */
-    playerInput = playerInput.toLowerCase();
-    playerInput = playerInput[0].toUpperCase() + playerInput.slice(1);
-    if (
-      playerInput !== "Rock" &&
-      playerInput !== "Paper" &&
-      playerInput !== "Scissors"
-    ) {
-      computerWinCounter = 99;
-      break;
-    }
+  const results = document.querySelector(".results");
+  const gamePreview = document.createElement("div");
+  const gameRoundMessage = document.createElement("div");
+  gamePreview.setAttribute("style", "white-space: pre;");
+  gameRoundMessage.setAttribute("style", "white-space: pre;");
+  gamePreview.textContent = `Please, input a "Rock", "Paper" or "Scissors"\n`;
+  const buttons = document.querySelectorAll("button");
 
-    let stringComputerChoice = getComputerChoice();
+  for (let element = 0; element < buttons.length; element++) {
+    buttons[element].addEventListener("click", () => {
+      var playerInput = buttons[element].className;
 
-    console.log(
-      `You chose ${playerInput} but... 
-      PC went straight with the ${stringComputerChoice}! So...`
-    );
+      var stringComputerChoice = getComputerChoice();
 
-    let outcomePlay = playRound(playerInput, stringComputerChoice);
+      gameRoundMessage.textContent = `You chose ${playerInput} but...\n\t\tPC went straight with the ${stringComputerChoice}! So...\n`;
 
-    //message in case the player wins
-    let winMessage = () =>
-      `You win! ${playerInput} wins ${stringComputerChoice}`;
-    //message in case the player loses
-    let loseMessage = () =>
-      `You lose! ${stringComputerChoice} wins ${playerInput}`;
-    //message in case it's tie
-    let tieMessage = () =>
-      `It's a tie between ${stringComputerChoice} and ${playerInput}`;
+      var outcomePlay = playRound(playerInput, stringComputerChoice);
 
-    if (outcomePlay == 1) {
-      console.log(winMessage());
-      playerWinCounter++;
-    } else if (outcomePlay == -1) {
-      console.log(loseMessage());
-      computerWinCounter++;
-    } else console.log(tieMessage());
+      //message in case the player wins
+      let winMessage = () =>
+        `You win! ${playerInput} wins ${stringComputerChoice}`;
+      //message in case the player loses
+      let loseMessage = () =>
+        `You lose! ${stringComputerChoice} wins ${playerInput}`;
+      //message in case it's tie
+      let tieMessage = () =>
+        `It's a tie between ${stringComputerChoice} and ${playerInput}`;
+
+      if (outcomePlay == 1) {
+        gameRoundMessage.textContent += winMessage();
+        playerWinCounter++;
+      } else if (outcomePlay == -1) {
+        gameRoundMessage.textContent += loseMessage();
+        computerWinCounter++;
+      } else gameRoundMessage.textContent += tieMessage();
+    });
   }
-  return playerWinCounter > computerWinCounter
-    ? `You win the game! ${playerWinCounter} : ${computerWinCounter}`
-    : playerWinCounter < computerWinCounter && computerWinCounter != 99
-    ? `You lose the game! ${playerWinCounter} : ${computerWinCounter}`
-    : playerWinCounter == computerWinCounter && computerWinCounter != 99
-    ? `A solid tie! ${playerWinCounter} : ${computerWinCounter}`
-    : `You broke the game`;
+  results.append(gamePreview, gameRoundMessage);
 }
 
-//main func
-console.log(game());
+//launch the main func
+game();
