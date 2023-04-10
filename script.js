@@ -48,8 +48,10 @@ function game() {
   const results = document.querySelector(".results");
   const gamePreview = document.createElement("div");
   const gameRoundMessage = document.createElement("div");
+  const gameSet = document.createElement("div");
   gamePreview.setAttribute("style", "white-space: pre;");
   gameRoundMessage.setAttribute("style", "white-space: pre;");
+  gameSet.setAttribute("style", "white-space: pre;");
   gamePreview.textContent = `Please, input a "Rock", "Paper" or "Scissors"\n`;
   const buttons = document.querySelectorAll("button");
 
@@ -79,10 +81,22 @@ function game() {
       } else if (outcomePlay == -1) {
         gameRoundMessage.textContent += loseMessage();
         computerWinCounter++;
-      } else gameRoundMessage.textContent += tieMessage();
+      } else {
+        gameRoundMessage.textContent += tieMessage();
+      }
+      gameSet.textContent = `Score.\nPlayer: ${playerWinCounter}\nAI: ${computerWinCounter}`;
+      if (playerWinCounter == 5) {
+        gamePreview.textContent = "";
+        gameSet.textContent += `\n\tYou won!`;
+        (computerWinCounter = 0), (playerWinCounter = 0);
+      } else if (computerWinCounter == 5) {
+        gamePreview.textContent = "";
+        gameSet.textContent += `\n\tYou lost you dickhead!`;
+        (computerWinCounter = 0), (playerWinCounter = 0);
+      }
     });
   }
-  results.append(gamePreview, gameRoundMessage);
+  results.append(gamePreview, gameRoundMessage, gameSet);
 }
 
 //launch the main func
