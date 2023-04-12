@@ -41,17 +41,27 @@ function playRound(playerSelection, computerSelection) {
   }
 }
 
+function choiceToEmoji(text) {
+  if (text == "Rock") {
+    return "✊";
+  } else if (text == "Scissors") {
+    return "✂️";
+  } //else if it's paper then
+  else return "🤚";
+}
+
 //play a game of rounds
 function game() {
   let computerWinCounter = 0,
     playerWinCounter = 0;
+  const mainMessage = document.querySelector(".main");
+
   const results = document.querySelector(".results");
   const gamePreview = document.createElement("div");
   const gameRoundMessage = document.createElement("div");
-  const gameSet = document.createElement("div");
   gamePreview.setAttribute("style", "white-space: pre;");
   gameRoundMessage.setAttribute("style", "white-space: pre;");
-  gameSet.setAttribute("style", "white-space: pre;");
+  gameRoundMessage.classList.toggle('game-round')
   gamePreview.textContent = `Please, input a "Rock", "Paper" or "Scissors"\n`;
   const buttons = document.querySelectorAll("button");
 
@@ -61,9 +71,12 @@ function game() {
 
       var stringComputerChoice = getComputerChoice();
 
-      gameRoundMessage.textContent = `You chose ${playerInput} but...\n\t\tPC went straight with the ${stringComputerChoice}! So...\n`;
-
       var outcomePlay = playRound(playerInput, stringComputerChoice);
+
+      playerInput = choiceToEmoji(playerInput);
+      stringComputerChoice = choiceToEmoji(stringComputerChoice);
+
+      gameRoundMessage.textContent = `You chose ${playerInput} but...\nPC went straight with the ${stringComputerChoice}! So...\n`;
 
       //message in case the player wins
       let winMessage = () =>
@@ -84,19 +97,18 @@ function game() {
       } else {
         gameRoundMessage.textContent += tieMessage();
       }
-      gameSet.textContent = `Score.\nPlayer: ${playerWinCounter}\nAI: ${computerWinCounter}`;
+      gamePreview.textContent = `Player vs AI: ${playerWinCounter}:${computerWinCounter}`;
       if (playerWinCounter == 5) {
-        gamePreview.textContent = "";
-        gameSet.textContent += `\n\tYou won!`;
+        gamePreview.textContent = `You won! ${playerWinCounter}:${computerWinCounter}`;
         (computerWinCounter = 0), (playerWinCounter = 0);
       } else if (computerWinCounter == 5) {
-        gamePreview.textContent = "";
-        gameSet.textContent += `\n\tYou lost you dickhead!`;
+        gamePreview.textContent = `You lost! ${playerWinCounter}:${computerWinCounter}`;
         (computerWinCounter = 0), (playerWinCounter = 0);
       }
     });
   }
-  results.append(gamePreview, gameRoundMessage, gameSet);
+  mainMessage.append(gamePreview);
+  results.append(gameRoundMessage);
 }
 
 //launch the main func
